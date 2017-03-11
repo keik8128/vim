@@ -94,6 +94,46 @@ func Test_filetype_valid()
   call assert_equal("trunc", &filetype)
 endfunc
 
+func Test_extrafiletypes_valid()
+  if !has('autocmd')
+    return
+  endif
+
+  call assert_true(empty(&extrafiletypes))
+  call assert_fails(":set eft=valid_name", "E450:")
+  call assert_true(empty(&extrafiletypes))
+  set ft=foo
+
+  set eft=valid_name
+  call assert_equal("valid_name", &extrafiletypes)
+  set eft=valid-name
+  call assert_equal("valid-name", &extrafiletypes)
+
+  call assert_fails(":set eft=wrong;name", "E474:")
+  call assert_fails(":set eft=wrong\\\\name", "E474:")
+  call assert_fails(":set eft=wrong\\|name", "E474:")
+  call assert_fails(":set eft=wrong/name", "E474:")
+  call assert_fails(":set eft=wrong\\\nname", "E474:")
+  call assert_equal("valid-name", &extrafiletypes)
+
+  set eft=bbb,ccc
+  call assert_equal("bbb,ccc", &extrafiletypes)
+  set eft+=ddd
+  call assert_equal("bbb,ccc,ddd", &extrafiletypes)
+  set eft^=aaa
+  call assert_equal("aaa,bbb,ccc,ddd", &extrafiletypes)
+  set eft+=aaa
+  call assert_equal("aaa,bbb,ccc,ddd", &extrafiletypes)
+  set eft-=ccc
+  call assert_equal("aaa,bbb,ddd", &extrafiletypes)
+
+  set ft=bar
+  call assert_true(empty(&extrafiletypes))
+
+  exe "set eft=trunc\x00name"
+  call assert_equal("trunc", &extrafiletypes)
+endfunc
+
 func Test_syntax_valid()
   if !has('syntax')
     return
@@ -112,6 +152,46 @@ func Test_syntax_valid()
 
   exe "set syn=trunc\x00name"
   call assert_equal("trunc", &syntax)
+endfunc
+
+func Test_extrasyntaxes_valid()
+  if !has('syntax')
+    return
+  endif
+
+  call assert_true(empty(&extrasyntaxes))
+  call assert_fails(":set esyn=valid_name", "E450:")
+  call assert_true(empty(&extrasyntaxes))
+  set syn=foo
+
+  set esyn=valid_name
+  call assert_equal("valid_name", &extrasyntaxes)
+  set esyn=valid-name
+  call assert_equal("valid-name", &extrasyntaxes)
+
+  call assert_fails(":set esyn=wrong;name", "E474:")
+  call assert_fails(":set esyn=wrong\\\\name", "E474:")
+  call assert_fails(":set esyn=wrong\\|name", "E474:")
+  call assert_fails(":set esyn=wrong/name", "E474:")
+  call assert_fails(":set esyn=wrong\\\nname", "E474:")
+  call assert_equal("valid-name", &extrasyntaxes)
+
+  set esyn=bbb,ccc
+  call assert_equal("bbb,ccc", &extrasyntaxes)
+  set esyn+=ddd
+  call assert_equal("bbb,ccc,ddd", &extrasyntaxes)
+  set esyn^=aaa
+  call assert_equal("aaa,bbb,ccc,ddd", &extrasyntaxes)
+  set esyn+=aaa
+  call assert_equal("aaa,bbb,ccc,ddd", &extrasyntaxes)
+  set esyn-=ccc
+  call assert_equal("aaa,bbb,ddd", &extrasyntaxes)
+
+  set syn=bar
+  call assert_true(empty(&extrasyntaxes))
+
+  exe "set esyn=trunc\x00name"
+  call assert_equal("trunc", &extrasyntaxes)
 endfunc
 
 func Test_keymap_valid()

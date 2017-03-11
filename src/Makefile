@@ -2118,6 +2118,8 @@ test_arglist \
 	test_expand_dllpath \
 	test_expr \
 	test_expr_utf8 \
+	test_extrafiletypes \
+	test_extrasyntaxes \
 	test_farsi \
 	test_feedkeys \
 	test_file_perm \

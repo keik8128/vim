@@ -32,9 +32,11 @@ au Syntax *		call s:SynSet()
 
 fun! s:SynSet()
   " clear syntax for :set syntax=OFF  and any syntax name that doesn't exist
-  syn clear
-  if exists("b:current_syntax")
-    unlet b:current_syntax
+  if !v:syn_isextra
+    syn clear
+    if exists("b:current_syntax")
+      unlet b:current_syntax
+    endif
   endif
 
   let s = expand("<amatch>")

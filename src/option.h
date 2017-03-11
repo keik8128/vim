@@ -1045,6 +1045,7 @@ enum
     , BV_FO
 #ifdef FEAT_AUTOCMD
     , BV_FT
+    , BV_EFT
 #endif
     , BV_IMI
     , BV_IMS
@@ -1092,6 +1093,7 @@ enum
 #ifdef FEAT_SYN_HL
     , BV_SMC
     , BV_SYN
+    , BV_ESYN
 #endif
 #ifdef FEAT_SPELL
     , BV_SPC

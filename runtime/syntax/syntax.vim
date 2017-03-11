@@ -1,6 +1,6 @@
 " Vim syntax support file
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2001 Sep 04
+" Last Change:	2017 Mar 11
 
 " This file is used for ":syntax on".
 " It installs the autocommands and starts highlighting for all buffers.
@@ -28,8 +28,14 @@ endif
 
 " Set up the connection between FileType and Syntax autocommands.
 " This makes the syntax automatically set when the file type is detected.
+" If the FileType event is caused by 'extrafiletypes', set 'extrasyntaxes'.
+" Due to ":silent!", E450 is to be ignored.
 augroup syntaxset
-  au! FileType *	exe "set syntax=" . expand("<amatch>")
+  au! FileType *	if v:ft_isextra
+                  \|  exe "silent! set extrasyntaxes+=" . expand("<amatch>")
+                  \|else
+                  \|  exe "set syntax=" . expand("<amatch>")
+                  \|endif
 augroup END
 
 

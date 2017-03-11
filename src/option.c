@@ -116,6 +116,7 @@
 #define PV_FO		OPT_BUF(BV_FO)
 #ifdef FEAT_AUTOCMD
 # define PV_FT		OPT_BUF(BV_FT)
+# define PV_EFT		OPT_BUF(BV_EFT)
 #endif
 #define PV_IMI		OPT_BUF(BV_IMI)
 #define PV_IMS		OPT_BUF(BV_IMS)
@@ -163,6 +164,7 @@
 #ifdef FEAT_SYN_HL
 # define PV_SMC		OPT_BUF(BV_SMC)
 # define PV_SYN		OPT_BUF(BV_SYN)
+# define PV_ESYN	OPT_BUF(BV_ESYN)
 #endif
 #ifdef FEAT_SPELL
 # define PV_SPC		OPT_BUF(BV_SPC)
@@ -321,6 +323,7 @@ static char_u	*p_fo;
 static char_u	*p_flp;
 #ifdef FEAT_AUTOCMD
 static char_u	*p_ft;
+static char_u	*p_eft;
 #endif
 static long	p_iminsert;
 static long	p_imsearch;
@@ -365,6 +368,7 @@ static int	p_swf;
 #ifdef FEAT_SYN_HL
 static long	p_smc;
 static char_u	*p_syn;
+static char_u	*p_esyn;
 #endif
 #ifdef FEAT_SPELL
 static char_u	*p_spc;
@@ -1150,6 +1154,24 @@ static struct vimoption options[] =
     {"exrc",	    "ex",   P_BOOL|P_VI_DEF|P_SECURE,
 			    (char_u *)&p_exrc, PV_NONE,
 			    {(char_u *)FALSE, (char_u *)0L} SCRIPTID_INIT},
+    {"extrafiletypes", "eft", P_STRING|P_ALLOCED|P_VI_DEF|P_ONECOMMA|P_NODUP|P_NOGLOB|P_NFNAME,
+#ifdef FEAT_AUTOCMD
+			    (char_u *)&p_eft, PV_EFT,
+			    {(char_u *)"", (char_u *)0L}
+#else
+			    (char_u *)NULL, PV_NONE,
+			    {(char_u *)0L, (char_u *)0L}
+#endif
+			    SCRIPTID_INIT},
+    {"extrasyntaxes", "esyn", P_STRING|P_ALLOCED|P_VI_DEF|P_ONECOMMA|P_NODUP|P_NOGLOB|P_NFNAME,
+#ifdef FEAT_SYN_HL
+			    (char_u *)&p_esyn, PV_ESYN,
+			    {(char_u *)"", (char_u *)0L}
+#else
+			    (char_u *)NULL, PV_NONE,
+			    {(char_u *)0L, (char_u *)0L}
+#endif
+			    SCRIPTID_INIT},
     {"fileencoding","fenc", P_STRING|P_ALLOCED|P_VI_DEF|P_RSTAT|P_RBUF
 								   |P_NO_MKRC,
 #ifdef FEAT_MBYTE
@@ -5644,6 +5666,7 @@ check_buf_options(buf_T *buf)
 #endif
 #ifdef FEAT_SYN_HL
     check_string_option(&buf->b_p_syn);
+    check_string_option(&buf->b_p_esyn);
     check_string_option(&buf->b_s.b_syn_isk);
 #endif
 #ifdef FEAT_SPELL
@@ -5661,6 +5684,7 @@ check_buf_options(buf_T *buf)
 #endif
 #ifdef FEAT_AUTOCMD
     check_string_option(&buf->b_p_ft);
+    check_string_option(&buf->b_p_eft);
 #endif
 #if defined(FEAT_SMARTINDENT) || defined(FEAT_CINDENT)
     check_string_option(&buf->b_p_cinw);
@@ -5970,15 +5994,18 @@ set_string_option(
 #if defined(FEAT_KEYMAP) || defined(FEAT_AUTOCMD) || defined(FEAT_SYN_HL)
 /*
  * Return TRUE if "val" is a valid 'filetype' name.
- * Also used for 'syntax' and 'keymap'.
+ * Also used for 'extrafiletypes', 'syntax', 'extrasyntaxes' and 'keymap'.
  */
     static int
-valid_filetype(char_u *val)
+valid_filetype(
+    char_u *val,	    /* set value */
+    int is_extra)	    /* for 'extrasyntaxes' and 'extrasyntaxes' */
 {
     char_u *s;
+    char_u *valid_chars = (char_u *)(is_extra ? ",-_" : ".-_");
 
     for (s = val; *s != NUL; ++s)
-	if (!ASCII_ISALNUM(*s) && vim_strchr((char_u *)".-_", *s) == NULL)
+	if (!ASCII_ISALNUM(*s) && vim_strchr(valid_chars, *s) == NULL)
 	    return FALSE;
     return TRUE;
 }
@@ -6409,7 +6436,7 @@ did_set_string_option(
 #ifdef FEAT_KEYMAP
     else if (varp == &curbuf->b_p_keymap)
     {
-	if (!valid_filetype(*varp))
+	if (!valid_filetype(*varp, FALSE))
 	    errmsg = e_invarg;
 	else
 	    /* load or unload key mapping tables */
@@ -7413,7 +7440,14 @@ did_set_string_option(
 #ifdef FEAT_AUTOCMD
     else if (gvarp == &p_ft)
     {
-	if (!valid_filetype(*varp))
+	if (!valid_filetype(*varp, FALSE))
+	    errmsg = e_invarg;
+    }
+    else if (gvarp == &p_eft)
+    {
+	if (*curbuf->b_p_ft == NUL)
+	    errmsg = e_noft;
+	else if (!valid_filetype(*varp, TRUE))
 	    errmsg = e_invarg;
     }
 #endif
@@ -7421,7 +7455,14 @@ did_set_string_option(
 #ifdef FEAT_SYN_HL
     else if (gvarp == &p_syn)
     {
-	if (!valid_filetype(*varp))
+	if (!valid_filetype(*varp, FALSE))
+	    errmsg = e_invarg;
+    }
+    else if (gvarp == &p_esyn)
+    {
+	if (*curbuf->b_p_syn == NUL)
+	    errmsg = e_nosyn;
+	else if (!valid_filetype(*varp, TRUE))
 	    errmsg = e_invarg;
     }
 #endif
@@ -7522,16 +7563,34 @@ did_set_string_option(
 	/* When 'syntax' is set, load the syntax of that name */
 	if (varp == &(curbuf->b_p_syn))
 	{
+	    clear_string_option(&curbuf->b_p_esyn);
+	    set_vim_var_nr(VV_SYN_ISEXTRA, 0);
 	    apply_autocmds(EVENT_SYNTAX, curbuf->b_p_syn,
 					       curbuf->b_fname, TRUE, curbuf);
+	}
+	else if (varp == &(curbuf->b_p_esyn))
+	{
+	    /* When 'extrasyntaxes' is set, load the syntax of that name */
+	    set_vim_var_nr(VV_SYN_ISEXTRA, 1);
+	    apply_autocmds_by_eft(EVENT_SYNTAX, curbuf->b_p_esyn,
+						curbuf->b_fname, TRUE, curbuf);
 	}
 # endif
 	else if (varp == &(curbuf->b_p_ft))
 	{
 	    /* 'filetype' is set, trigger the FileType autocommand */
+	    clear_string_option(&curbuf->b_p_eft);
 	    did_filetype = TRUE;
+	    set_vim_var_nr(VV_FT_ISEXTRA, 0);
 	    apply_autocmds(EVENT_FILETYPE, curbuf->b_p_ft,
 					       curbuf->b_fname, TRUE, curbuf);
+	}
+	else if (varp == &(curbuf->b_p_eft))
+	{
+	    /* When 'extrafiletypes' is set, trigger the FileType autocommand */
+	    set_vim_var_nr(VV_FT_ISEXTRA, 1);
+	    apply_autocmds_by_eft(EVENT_FILETYPE, curbuf->b_p_eft,
+						curbuf->b_fname, TRUE, curbuf);
 	}
 #endif
 #ifdef FEAT_SPELL
@@ -10680,6 +10739,7 @@ get_varp(struct vimoption *p)
 	case PV_FF:	return (char_u *)&(curbuf->b_p_ff);
 #ifdef FEAT_AUTOCMD
 	case PV_FT:	return (char_u *)&(curbuf->b_p_ft);
+	case PV_EFT:	return (char_u *)&(curbuf->b_p_eft);
 #endif
 	case PV_FO:	return (char_u *)&(curbuf->b_p_fo);
 	case PV_FLP:	return (char_u *)&(curbuf->b_p_flp);
@@ -10727,6 +10787,7 @@ get_varp(struct vimoption *p)
 #ifdef FEAT_SYN_HL
 	case PV_SMC:	return (char_u *)&(curbuf->b_p_smc);
 	case PV_SYN:	return (char_u *)&(curbuf->b_p_syn);
+	case PV_ESYN:	return (char_u *)&(curbuf->b_p_esyn);
 #endif
 #ifdef FEAT_SPELL
 	case PV_SPC:	return (char_u *)&(curwin->w_s->b_p_spc);
@@ -11088,8 +11149,9 @@ buf_copy_options(buf_T *buf, int flags)
 	    buf->b_p_cino = vim_strsave(p_cino);
 #endif
 #ifdef FEAT_AUTOCMD
-	    /* Don't copy 'filetype', it must be detected */
+	    /* Don't copy 'filetype' and 'extrafiletypes', they must be detected */
 	    buf->b_p_ft = empty_option;
+	    buf->b_p_eft = empty_option;
 #endif
 	    buf->b_p_pi = p_pi;
 #if defined(FEAT_SMARTINDENT) || defined(FEAT_CINDENT)
@@ -11099,8 +11161,9 @@ buf_copy_options(buf_T *buf, int flags)
 	    buf->b_p_lisp = p_lisp;
 #endif
 #ifdef FEAT_SYN_HL
-	    /* Don't copy 'syntax', it must be set */
+	    /* Don't copy 'syntax' and 'extrasyntaxes', they must be set */
 	    buf->b_p_syn = empty_option;
+	    buf->b_p_esyn = empty_option;
 	    buf->b_p_smc = p_smc;
 	    buf->b_s.b_syn_isk = empty_option;
 #endif

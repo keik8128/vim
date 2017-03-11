@@ -1,7 +1,7 @@
 " These commands create the option window.
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2017 Mar 06
+" Last Change:	2017 Mar 11
 
 " If there already is an option window, jump to that one.
 if bufwinnr("option-window") > 0
@@ -399,11 +399,17 @@ if has("autocmd")
   call append("$", "filetype\ttype of file; triggers the FileType event when set")
   call append("$", "\t(local to buffer)")
   call <SID>OptionL("ft")
+  call append("$", "extrafiletypes\textra types of file; triggers the FileType event when set")
+  call append("$", "\t(local to buffer)")
+  call <SID>OptionL("eft")
 endif
 if has("syntax")
   call append("$", "syntax\tname of syntax highlighting used")
   call append("$", "\t(local to buffer)")
   call <SID>OptionL("syn")
+  call append("$", "extrasyntaxes\textra names of syntax highlighting used")
+  call append("$", "\t(local to buffer)")
+  call <SID>OptionL("esyn")
   call append("$", "synmaxcol\tmaximum column to look for syntax items")
   call append("$", "\t(local to buffer)")
   call <SID>OptionL("smc")

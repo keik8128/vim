@@ -152,6 +152,8 @@ NEW_TESTS = test_arabic.res \
 	    test_digraph.res \
 	    test_display.res \
 	    test_edit.res \
+	    test_extrafiletypes.res \
+	    test_extrasyntaxes.res \
 	    test_farsi.res \
 	    test_fnameescape.res \
 	    test_fold.res \

@@ -187,6 +187,34 @@ filemess(
     msg_scrolled_ign = FALSE;
 }
 
+
+
+/*
+ * Execute autocommands for FileType or Syntax.
+ * Used FileType or Syntax by 'extrafiletypes' or 'extrasyntaxes'.
+ */
+    void
+apply_autocmds_by_eft(
+    event_T	event,	    /* EVENT_FILETYPE or EVENT_SYNTAX */
+    char_u	*amatch,    /* <amatch> (value of 'eft' or 'esyn') */
+    char_u	*fname_io,  /* fname to use for <afile> on cmdline */
+    int		force,	    /* when TRUE, ignore autocmd_busy */
+    buf_T	*buf)	    /* buffer for <abuf> */
+{
+    char_u	*value;
+    int		len = (int)STRLEN(amatch) + 1;
+    char_u	*part = alloc((unsigned)len);
+
+    for (value = amatch; *value; )
+    {
+	copy_option_part(&value, part, len, ",");
+	apply_autocmds(event, part, fname_io, force, buf);
+    }
+    vim_free(part);
+}
+
+
+
 /*
  * Read lines from file "fname" into the buffer after line "from".
  *
@@ -2711,6 +2739,9 @@ failed:
 		 */
 		apply_autocmds(EVENT_FILETYPE, curbuf->b_p_ft, curbuf->b_fname,
 			TRUE, curbuf);
+		if (*curbuf->b_p_eft != NUL)
+		    apply_autocmds_by_eft(EVENT_FILETYPE, curbuf->b_p_eft,
+				curbuf->b_fname, TRUE, curbuf);
 	}
 	else
 	    apply_autocmds_exarg(EVENT_FILEREADPOST, sfname, sfname,

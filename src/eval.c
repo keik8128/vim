@@ -187,6 +187,8 @@ static struct vimvar
     {VV_NAME("t_none",		 VAR_NUMBER), VV_RO},
     {VV_NAME("t_job",		 VAR_NUMBER), VV_RO},
     {VV_NAME("t_channel",	 VAR_NUMBER), VV_RO},
+    {VV_NAME("ft_isextra",	 VAR_NUMBER), VV_RO},
+    {VV_NAME("syn_isextra",	 VAR_NUMBER), VV_RO},
 };
 
 /* shorthand */
@@ -334,6 +336,9 @@ eval_init(void)
     set_vim_var_nr(VV_TYPE_NONE,    VAR_TYPE_NONE);
     set_vim_var_nr(VV_TYPE_JOB,     VAR_TYPE_JOB);
     set_vim_var_nr(VV_TYPE_CHANNEL, VAR_TYPE_CHANNEL);
+
+    set_vim_var_nr(VV_FT_ISEXTRA,  0);
+    set_vim_var_nr(VV_SYN_ISEXTRA, 0);
 
     set_reg_var(0);  /* default for v:register is not 0 but '"' */
 

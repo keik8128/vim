@@ -1607,6 +1607,13 @@ EXTERN char_u e_invalidreg[]    INIT(= N_("E850: Invalid register name"));
 #endif
 EXTERN char_u e_dirnotf[]	INIT(= N_("E919: Directory not found in '%s': \"%s\""));
 
+#ifdef FEAT_AUTOCMD
+EXTERN char_u e_noft[]		INIT(=N_("E450: Set 'filetype' before 'extrafiletypes'"));
+#endif
+#ifdef FEAT_SYN_HL
+EXTERN char_u e_nosyn[]		INIT(=N_("E450: Set 'syntax' before 'extrasyntaxes'"));
+#endif
+
 #ifdef MACOS_X_UNIX
 EXTERN short disallow_gui	INIT(= FALSE);
 #endif

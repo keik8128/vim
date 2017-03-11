@@ -2103,6 +2103,7 @@ struct file_buffer
     char_u	*b_p_ff;	/* 'fileformat' */
 #ifdef FEAT_AUTOCMD
     char_u	*b_p_ft;	/* 'filetype' */
+    char_u	*b_p_eft;	/* 'extrafiletypes' */
 #endif
     char_u	*b_p_fo;	/* 'formatoptions' */
     char_u	*b_p_flp;	/* 'formatlistpat' */
@@ -2160,6 +2161,7 @@ struct file_buffer
 #ifdef FEAT_SYN_HL
     long	b_p_smc;	/* 'synmaxcol' */
     char_u	*b_p_syn;	/* 'syntax' */
+    char_u	*b_p_esyn;	/* 'extrasyntaxes' */
 #endif
     long	b_p_ts;		/* 'tabstop' */
     int		b_p_tx;		/* 'textmode' */

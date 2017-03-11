@@ -1,6 +1,6 @@
 " Vim syntax support file
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2016 Feb 01
+" Last Change:	2017 Mar 11
 
 " This file is used for ":syntax manual".
 " It installs the Syntax autocommands, but no the FileType autocommands.
@@ -18,8 +18,9 @@ let syntax_manual = 1
 
 " Overrule the connection between FileType and Syntax autocommands.  This sets
 " the syntax when the file type is detected, without changing the value.
+" Due to ":silent!", E450 is to be ignored.
 augroup syntaxset
-  au! FileType *	exe "set syntax=" . &syntax
+  au! FileType *	exe "silent! syntax=" . &syntax "extrasyntaxes=" . &extrasyntaxes
 augroup END
 
 " If the GUI is already running, may still need to install the FileType menu.

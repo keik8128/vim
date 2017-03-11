@@ -1,4 +1,4 @@
-*syntax.txt*	For Vim version 8.0.  Last change: 2017 Feb 06
+*syntax.txt*	For Vim version 8.0.  Last change: 2017 Mar 11
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -304,7 +304,7 @@ located.  This is used here as the variable |$VIMRUNTIME|.
     |	|   set yet.
     |	|
     |	+-  Set up syntax autocmds to load the appropriate syntax file when
-    |	|   the 'syntax' option is set. *synload-1*
+    |	|   the 'syntax' or 'extrasyntaxes' option is set. *synload-1*
     |	|
     |	+-  Source the user's optional file, from the |mysyntaxfile| variable.
     |	    This is for backwards compatibility with Vim 5.x only. *synload-2*
@@ -313,7 +313,8 @@ located.  This is used here as the variable |$VIMRUNTIME|.
     |	filetype.vim files found.  It should always Source
     |	$VIMRUNTIME/filetype.vim, which does the following.
     |	|
-    |	+-  Install autocmds based on suffix to set the 'filetype' option
+    |	+-  Install autocmds based on suffix to set the 'filetype' or
+    |	|   'extrafiletypes' option.
     |	|   This is where the connection between file name and file type is
     |	|   made for known file types. *synload-3*
     |	|
@@ -326,8 +327,8 @@ located.  This is used here as the variable |$VIMRUNTIME|.
     |	|
     |	+-  Source $VIMRUNTIME/menu.vim, to setup the Syntax menu. |menu.vim|
     |
-    +-	Install a FileType autocommand to set the 'syntax' option when a file
-    |	type has been detected. *synload-6*
+    +-	Install a FileType autocommand to set the 'syntax' or 'extrasyntaxes'
+    |	option when a file type has been detected. *synload-6*
     |
     +-	Execute syntax autocommands to start syntax highlighting for each
 	already loaded buffer.
@@ -352,13 +353,13 @@ Upon loading a file, Vim finds the relevant syntax file as follows:
     |	    again with checks like "getline(1) =~ pattern" as to whether the
     |	    file type can be recognized, and set 'filetype'.
     |
-    +-	When the file type was determined and 'filetype' was set, this
-    |	triggers the FileType autocommand |synload-6| above.  It sets
-    |	'syntax' to the determined file type.
+    +-	When the file type was determined and 'filetype' or 'extrafiletypes'
+    |	was set, this triggers the FileType autocommand |synload-6| above.
+    |	It sets 'syntax' or 'extrasyntaxes' to the determined file type.
     |
-    +-	When the 'syntax' option was set above, this triggers an autocommand
-    |	from |synload-1| (and |synload-2|).  This find the main syntax file in
-    |	'runtimepath', with this command:
+    +-	When the 'syntax' or 'extrasyntaxes' option was set above, this
+    |	triggers an autocommand from |synload-1| (and |synload-2|).  This find
+    |	the main syntax file in 'runtimepath', with this command:
     |		runtime! syntax/<name>.vim
     |
     +-	Any other user installed FileType or Syntax autocommands are

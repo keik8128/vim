@@ -1,4 +1,4 @@
-*options.txt*	For Vim version 8.0.  Last change: 2017 Mar 05
+*options.txt*	For Vim version 8.0.  Last change: 2017 Mar 11
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -2904,6 +2904,51 @@ A jump table for the options with a short description can be found at |Q_op|.
 	This option cannot be set from a |modeline| or in the |sandbox|, for
 	security reasons.
 
+					*'extrafiletypes'* *'eft'* *E450*
+'extrafiletypes' 'eft'	string (default: "")
+			local to buffer
+			{not in Vi}
+			{not available when compiled without the |+autocmd|
+			feature}
+	List of extra filetypes, separated by commas. When this option is set,
+	the FileType autocommand event is triggered. All autocommands that
+	match with the value of this option will be executed. Thus the value
+	of 'extrafiletypes' is used in place of the file name.
+	If you try to set 'extrafiletypes' when 'filetype' is empty, E450
+	occurs.
+	When 'filetype' is reset, 'extrafiletypes' is cleared.
+	Note that FileType event is called against each item of the separated
+	list. So if 'extrafiletypes' is "foo,bar", FileType event is called
+	twice. First, "FileType foo" is called, second, "FileType bar".
+	Note that this option does not accept piriod separated list, unlike
+	'filetype'. Instead, use commas.
+	Only normal file name characters can be used, "/\*?[|<>" are illegal.
+
+					*'extrasyntaxes'* *'esyn'* *E450*
+'extrasyntaxes' 'esyn'	string	(default: "")
+			local to buffer
+			{not in Vi}
+			{not available when compiled without the |+syntax|
+			feature}
+	List of extra syntaxes, separated by commas. When this option is set,
+	the Syntax autocommand event is triggered. All autocommands that match
+	with the value of this option will be executed. Thus the value of
+	'extrasyntaxes' is used in place of the file name.
+	If you try to set 'extrasyntaxes' when 'syntax' is empty, E450
+	occurs.
+	When 'syntax' is reset, 'extrasyntaxes' is cleared.
+	Note that Syntax event is called against each item of the separated
+	list. So if 'extrasyntaxes' is "foo,bar", Syntax event is called
+	twice. First, "Syntax foo" is called, second, "Syntax bar".
+	Note that this option does not accept piriod separated list, unlike
+	'syntax'. Instead, use commas.
+	To switch off syntax highlighting for the current file, use: >
+		:set syntax=OFF
+<	To switch syntax highlighting on according to the current value of the
+	'extrafiletypes' option: >
+		:set syntax=ON
+<	Only normal file name characters can be used, "/\*?[|<>" are illegal.
+
 				*'fileencoding'* *'fenc'* *E213*
 'fileencoding' 'fenc'	string (default: "")
 			local to buffer
@@ -3135,6 +3180,12 @@ A jump table for the options with a short description can be found at |Q_op|.
 	This will use the "c" filetype first, then the "doxygen" filetype.
 	This works both for filetype plugins and for syntax files.  More than
 	one dot may appear.
+	Note: this feature is obsolete, use 'extrafiletypes'. If you want to
+	set `filetype=vim.vimrc`, execute these commands: >
+		set filetype=vim
+		set extrafiletypes=vimrc
+<	You should keep 'filetype' single type, since most plugins cannot
+	handle composite filetypes.
 	This option is not copied to another buffer, independent of the 's' or
 	'S' flag in 'cpoptions'.
 	Only normal file name characters can be used, "/\*?[|<>" are illegal.
@@ -7430,6 +7481,12 @@ A jump table for the options with a short description can be found at |Q_op|.
 	This will use the "c" syntax first, then the "doxygen" syntax.
 	Note that the second one must be prepared to be loaded as an addition,
 	otherwise it will be skipped.  More than one dot may appear.
+	Note: this feature is obsolete, use 'extrasyntaxes'. If you want to
+	set `syntax=vim.vimrc`, execute these commands: >
+		set syntax=vim
+		set extrasyntaxes=vimrc
+<	You should keep 'syntax' single type, since most plugins cannot handle
+	composite syntaxes.
 	To switch off syntax highlighting for the current file, use: >
 		:set syntax=OFF
 <	To switch syntax highlighting on according to the current value of the

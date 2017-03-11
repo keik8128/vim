@@ -1,4 +1,4 @@
-*eval.txt*	For Vim version 8.0.  Last change: 2017 Mar 04
+*eval.txt*	For Vim version 8.0.  Last change: 2017 Mar 11
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -1646,6 +1646,10 @@ v:foldend	Used for 'foldtext': last line of closed fold.
 v:foldstart	Used for 'foldtext': first line of closed fold.
 		Read-only in the |sandbox|. |fold-foldtext|
 
+					*v:ft_isextra* *ft_isextra-variable*
+v:ft_isextra	Used for |FileType|.  If the FileType event is triggered by
+		'extrafiletypes', it is 1, otherwise 0. Read-only.
+
 					*v:hlsearch* *hlsearch-variable*
 v:hlsearch	Variable that indicates whether search highlighting is on. 
 		Setting it makes sense only if 'hlsearch' is enabled which
@@ -1866,6 +1870,10 @@ v:swapcommand	Normal mode command to be executed after a file has been
 		another Vim open the file and jump to the right place.  For
 		example, when jumping to a tag the value is ":tag tagname\r".
 		For ":edit +cmd file" the value is ":cmd\r".
+
+					*v:syn_isextra* *syn_isextra-variable*
+v:syn_isextra	Used for |Syntax|.  If the Syntax event is triggered by
+		'extrasyntaxes', it is 1, otherwise 0. Read-only.
 
 				*v:t_TYPE* *v:t_bool* *t_bool-variable*
 v:t_bool	Value of Boolean type.  Read-only.  See: |type()|
@@ -3043,8 +3051,8 @@ char2nr({expr}[, {utf8}])					*char2nr()*
 			char2nr("ABC")		returns 65
 <		When {utf8} is omitted or zero, the current 'encoding' is used.
 		Example for "utf-8": >
-			char2nr("á")		returns 225
-			char2nr("á"[0])		returns 195
+			char2nr("?")		returns 225
+			char2nr("?"[0])		returns 195
 <		With {utf8} set to 1, always treat as utf-8 characters.
 		A combining character is a separate character.
 		|nr2char()| does the opposite.

@@ -1,4 +1,4 @@
-*autocmd.txt*   For Vim version 8.0.  Last change: 2017 Jan 14
+*autocmd.txt*   For Vim version 8.0.  Last change: 2017 Mar 11
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -267,8 +267,8 @@ Name			triggered by ~
 |SwapExists|		detected an existing swap file
 
 	Options
-|FileType|		when the 'filetype' option has been set
-|Syntax|		when the 'syntax' option has been set
+|FileType|		when the 'ft' or 'eft' option has been set
+|Syntax|		when the 'syn' or 'esyn' option has been set
 |EncodingChanged|	after the 'encoding' option has been changed
 |TermChanged|		after the value of 'term' has changed
 |OptionSet|		after setting any option
@@ -647,11 +647,16 @@ FileReadPost			After reading a file with a ":read" command.
 							*FileReadPre*
 FileReadPre			Before reading a file with a ":read" command.
 							*FileType*
-FileType			When the 'filetype' option has been set.  The
-				pattern is matched against the filetype.
+FileType			When the 'filetype' or 'extrafiletypes' option
+				has been set.  The pattern is matched against
+				the filetype.
 				<afile> can be used for the name of the file
 				where this option was set, and <amatch> for
-				the new value of 'filetype'.
+				the new value of 'filetype' or each item of
+				'extrafiletypes'.
+				You can know if the FileType event is
+				triggered by 'extrafiletypes', by using
+				|v:ft_isextra|.
 				See |filetypes|.
 							*FileWriteCmd*
 FileWriteCmd			Before writing to a file, when not writing the
@@ -885,11 +890,14 @@ SwapExists			Detected an existing swap file when starting
 				change a buffer name or change directory
 				here.
 							*Syntax*
-Syntax				When the 'syntax' option has been set.  The
-				pattern is matched against the syntax name.
-				<afile> can be used for the name of the file
-				where this option was set, and <amatch> for
-				the new value of 'syntax'.
+Syntax				When the 'syntax' or 'extrasyntaxes' option
+				has been set.  The pattern is matched against
+				the syntax name. <afile> can be used for the
+				name of the file where this option was set,
+				and <amatch> for the new value of 'syntax' or
+				each item of 'extrasyntaxes'.
+				You can know if the Syntax event is triggered
+				by 'extrasyntaxes', by using |v:syn_isextra|.
 				See |:syn-on|.
 							*TabClosed*
 TabClosed			After closing a tab page.

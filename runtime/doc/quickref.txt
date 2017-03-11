@@ -1,4 +1,4 @@
-*quickref.txt*  For Vim version 8.0.  Last change: 2016 Dec 16
+*quickref.txt*  For Vim version 8.0.  Last change: 2017 Mar 11
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -691,6 +691,8 @@ Short explanation of each option:		*option-list*
 'eventignore'	  'ei'	    autocommand events that are ignored
 'expandtab'	  'et'	    use spaces when <Tab> is inserted
 'exrc'		  'ex'	    read .vimrc and .exrc in the current directory
+'extrafiletypes'  'eft'	    extra filetypes extending 'filetype'
+'extrasyntaxes'	  'esyn'    extra syntaxes extending 'syntax'
 'fileencoding'	  'fenc'    file encoding for multi-byte text
 'fileencodings'   'fencs'   automatically detected character encodings
 'fileformat'	  'ff'	    file format used for file I/O

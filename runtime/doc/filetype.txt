@@ -1,4 +1,4 @@
-*filetype.txt*  For Vim version 8.0.  Last change: 2017 Jan 04
+*filetype.txt*  For Vim version 8.0.  Last change: 2017 Mar 11
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -7,8 +7,9 @@
 Filetypes						*filetype* *file-type*
 
 1. Filetypes					|filetypes|
-2. Filetype plugin				|filetype-plugins|
-3. Docs for the default filetype plugins.	|ftplugin-docs|
+2  Extra Filetypes				|extrafiletypes|
+3. Filetype plugin				|filetype-plugins|
+4. Docs for the default filetype plugins.	|ftplugin-docs|
 
 Also see |autocmd.txt|.
 
@@ -25,8 +26,9 @@ text.
 To enable file type detection, use this command in your vimrc: >
 	:filetype on
 Each time a new or existing file is edited, Vim will try to recognize the type
-of the file and set the 'filetype' option.  This will trigger the FileType
-event, which can be used to set the syntax highlighting, set options, etc.
+of the file and set the 'filetype' and 'extrafiletypes' option.  This will
+trigger the FileType event, which can be used to set the syntax highlighting,
+set options, etc.
 
 NOTE: Filetypes and 'compatible' don't work together well, since being Vi
 compatible means options are global.  Resetting 'compatible' is recommended,
@@ -54,8 +56,8 @@ filetype prepend "ft-" and optionally append "-syntax", "-indent" or
 	:help ft-man-plugin
 
 If the file type is not detected automatically, or it finds the wrong type,
-you can either set the 'filetype' option manually, or add a modeline to your
-file.  Example, for an IDL file use the command: >
+you can either set the 'filetype' or 'extrafiletypes' option manually, or add
+a modeline to your file.  Example, for an IDL file use the command: >
 	:set filetype=idl
 
 or add this |modeline| to the file:
@@ -189,6 +191,15 @@ A. If you want to overrule all default file type checks.
    The files in the "ftdetect" directory are used after all the default
    checks, thus they can overrule a previously detected file type.  But you
    can also use |:setfiletype| to keep a previously detected filetype.
+							*eftdetect*
+   If you want to overrule extra file types, use "eftdetect" directory instead
+   of "ftdetect".
+   Example: >
+	au BufRead,BufNewFile *vimrc*
+	  \ if did_filetype() | set extrafiletypes+=vimrc | endif
+<  There is no "augroup" like 'filetype'.
+   Note that if you try to set 'extrafiletypes' when 'filetype' is empty, E450
+   occurs. So |did_filetype()| is necessary.
 
 B. If you want to detect your file after the default file type checks.
 
@@ -201,6 +212,10 @@ B. If you want to detect your file after the default file type checks.
    example, to use the file type "mypascal" when "pascal" has been detected: >
 	au BufRead,BufNewFile *		if &ft == 'pascal' | set ft=mypascal
 								       | endif
+
+<  Of course, you can set 'extrafiletypes' in a similar way. >
+	au BufRead,BufNewFile *vimrc*
+	  \ if did_filetype() | set extrafiletypes+=vimrc | endif
 
 C. If your file type can be detected by the file name.
    1. Create your user runtime directory.  You would normally use the first
@@ -216,6 +231,11 @@ C. If your file type can be detected by the file name.
 	augroup filetypedetect
 	  au! BufRead,BufNewFile *.mine		setfiletype mine
 	  au! BufRead,BufNewFile *.xyz		setfiletype drawing
+
+	  " Note: detection of extra file types must be executed after file
+	  " type's.
+	  au BufRead,BufNewFile *vimrc*
+	    \ if did_filetype() | set extrafiletypes+=vimrc | endif
 	augroup END
 <     Write this file as "filetype.vim" in your user runtime directory.  For
       example, for Unix: >
@@ -257,8 +277,9 @@ D. If your filetype can only be detected by inspecting the contents of the
 
 						*remove-filetype*
 If a file type is detected that is wrong for you, install a filetype.vim or
-scripts.vim to catch it (see above).  You can set 'filetype' to a non-existing
-name to avoid that it will be set later anyway: >
+scripts.vim to catch it (see above).  You can set 'filetype' or
+'extrafiletypes' to a non-existing name to avoid that it will be set later
+anyway: >
 	:set filetype=ignored
 
 If you are setting up a system with many users, and you don't want each user
@@ -332,7 +353,7 @@ plugins.  It starts with:
 There you can see where Vim looks for your plugin scripts.
 
 ==============================================================================
-2. Filetype plugin					*filetype-plugins*
+3. Filetype plugin					*filetype-plugins*
 
 When loading filetype plugins has been enabled |:filetype-plugin-on|, options
 will be set and mappings defined.  These are all local to the buffer, they
@@ -392,7 +413,7 @@ ways to change this:
 <  In this file you can change just those settings that you want to change.
 
 ==============================================================================
-3.  Docs for the default filetype plugins.		*ftplugin-docs*
+4.  Docs for the default filetype plugins.		*ftplugin-docs*
 
 
 CHANGELOG						*ft-changelog-plugin*

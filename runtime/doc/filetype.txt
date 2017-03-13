@@ -7,9 +7,8 @@
 Filetypes						*filetype* *file-type*
 
 1. Filetypes					|filetypes|
-2  Extra Filetypes				|extrafiletypes|
-3. Filetype plugin				|filetype-plugins|
-4. Docs for the default filetype plugins.	|ftplugin-docs|
+2. Filetype plugin				|filetype-plugins|
+3. Docs for the default filetype plugins.	|ftplugin-docs|
 
 Also see |autocmd.txt|.
 
@@ -353,7 +352,7 @@ plugins.  It starts with:
 There you can see where Vim looks for your plugin scripts.
 
 ==============================================================================
-3. Filetype plugin					*filetype-plugins*
+2. Filetype plugin					*filetype-plugins*
 
 When loading filetype plugins has been enabled |:filetype-plugin-on|, options
 will be set and mappings defined.  These are all local to the buffer, they
@@ -413,7 +412,7 @@ ways to change this:
 <  In this file you can change just those settings that you want to change.
 
 ==============================================================================
-4.  Docs for the default filetype plugins.		*ftplugin-docs*
+3.  Docs for the default filetype plugins.		*ftplugin-docs*
 
 
 CHANGELOG						*ft-changelog-plugin*

@@ -191,7 +191,8 @@ filemess(
 
 /*
  * Execute autocommands for FileType or Syntax.
- * Used FileType or Syntax by 'extrafiletypes' or 'extrasyntaxes'.
+ * Used when FileType or Syntax is caused by 'extrafiletypes' or
+ * 'extrasyntaxes'.
  */
     void
 apply_autocmds_by_eft(

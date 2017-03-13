@@ -14,6 +14,14 @@ function! SetUp()
   execute 'split' syntaxdir . '/ccccc.vim'
   call setline(1, 'let g:esyn_syntax_ccccc_works = 1')
   wq
+
+  execute 'split' syntaxdir . '/ddddd.vim'
+  call setline(1, 'let g:esyn_syntax_ddddd_works = 2')
+  wq
+
+  execute 'split' syntaxdir . '/eeeee.vim'
+  call setline(1, 'let g:esyn_syntax_eeeee_works = 3')
+  wq
 endfunction
 
 function! TearDown()
@@ -53,4 +61,23 @@ function! Test_esyn()
     call assert_equal("ddddd", &syntax)
     call assert_equal("eeeee,fffff", &extrasyntaxes)
   endif
+endfunction
+
+function! Test_esyn_syntax_manual()
+  if (!has('syntax') || !has('autocmd')) | return | endif
+
+  syntax manual
+
+  augroup test_extrasyntaxes
+    autocmd Syntax ddddd let g:esyn_autocmd_ddddd_works = 13
+    autocmd Syntax eeeee let g:esyn_autocmd_eeeee_works = 21
+  augroup END
+
+  set ft=aaaaa eft=ddddd,eeeee
+  set syn=ON
+
+  call assert_equal(2, g:esyn_syntax_ddddd_works)
+  call assert_equal(3, g:esyn_syntax_eeeee_works)
+  call assert_equal(13, g:esyn_autocmd_ddddd_works)
+  call assert_equal(21, g:esyn_autocmd_eeeee_works)
 endfunction

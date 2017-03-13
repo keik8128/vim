@@ -20,7 +20,7 @@ let syntax_manual = 1
 " the syntax when the file type is detected, without changing the value.
 " Due to ":silent!", E450 is to be ignored.
 augroup syntaxset
-  au! FileType *	exe "silent! syntax=" . &syntax "extrasyntaxes=" . &extrasyntaxes
+  au! FileType *	exe "silent! set syntax=" . &syntax "extrasyntaxes=" . &extrasyntaxes
 augroup END
 
 " If the GUI is already running, may still need to install the FileType menu.

@@ -1,4 +1,4 @@
-*filetype.txt*  For Vim version 8.0.  Last change: 2017 Mar 11
+*filetype.txt*  For Vim version 8.0.  Last change: 2017 Mar 15
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -190,15 +190,6 @@ A. If you want to overrule all default file type checks.
    The files in the "ftdetect" directory are used after all the default
    checks, thus they can overrule a previously detected file type.  But you
    can also use |:setfiletype| to keep a previously detected filetype.
-							*eftdetect*
-   If you want to overrule extra file types, use "eftdetect" directory instead
-   of "ftdetect".
-   Example: >
-	au BufRead,BufNewFile *vimrc*
-	  \ if did_filetype() | set extrafiletypes+=vimrc | endif
-<  There is no "augroup" like 'filetype'.
-   Note that if you try to set 'extrafiletypes' when 'filetype' is empty, E450
-   occurs. So |did_filetype()| is necessary.
 
 B. If you want to detect your file after the default file type checks.
 

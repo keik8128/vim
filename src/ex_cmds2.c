@@ -3599,7 +3599,6 @@ add_pack_plugin(char_u *fname, void *cookie)
     {
 	static char *plugpat = "%s/plugin/**/*.vim";
 	static char *ftpat = "%s/ftdetect/*.vim";
-	static char *eftpat = "%s/eftdetect/*.vim";
 	int	    len;
 	char_u	    *pat;
 
@@ -3620,9 +3619,6 @@ add_pack_plugin(char_u *fname, void *cookie)
 	    {
 		do_cmdline_cmd((char_u *)"augroup filetypedetect");
 		vim_snprintf((char *)pat, len, ftpat, ffname);
-		source_all_matches(pat);
-		/* eftdetect/ must be loaded after ftdetect/. */
-		vim_snprintf((char *)pat, len, eftpat, ffname);
 		source_all_matches(pat);
 		do_cmdline_cmd((char_u *)"augroup END");
 	    }

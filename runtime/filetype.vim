@@ -1,7 +1,7 @@
 " Vim support file to detect file types
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last Change:	2017 Mar 11
+" Last Change:	2017 Mar 15
 
 " Listen very carefully, I will say this only once
 if exists("did_load_filetypes")
@@ -2768,24 +2768,6 @@ au filetypedetect BufNewFile,BufRead,StdinReadPost *
 	\	|| getline(4) =~ '^#' || getline(5) =~ '^#') |
 	\   setf conf |
 	\ endif
-
-
-
-" Detect extra filetypes. Since 'eft' must be set after 'ft' is set, These
-" commands must be executed after filetype detection commands.
-augroup filetypedetect
-
-" No built-in detection of extrafiletypes now.
-
-" Use the extra filetypes detect plugins.  They may overrule any of the
-" previously detected extra filetypes.
-runtime! eftdetect/*.vim
-
-" NOTE: The above command could have ended the filetypedetect autocmd group
-" and started another one. Let's make sure it has ended to get to a consistent
-" state.
-augroup END
-
 
 
 " If the GUI is already running, may still need to install the Syntax menu.

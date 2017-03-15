@@ -15,7 +15,6 @@ endfunc
 func Test_packadd()
   call mkdir(s:plugdir . '/plugin/also', 'p')
   call mkdir(s:plugdir . '/ftdetect', 'p')
-  call mkdir(s:plugdir . '/eftdetect', 'p')
   call mkdir(s:plugdir . '/after', 'p')
   set rtp&
   let rtp = &rtp
@@ -33,16 +32,11 @@ func Test_packadd()
   call setline(1, 'let g:ftdetect_works = 17')
   wq
 
-  exe 'split ' . s:plugdir . '/eftdetect/test.vim'
-  call setline(1, 'let g:eftdetect_works = 57')
-  wq
-
   packadd mytest
 
   call assert_equal(42, g:plugin_works)
   call assert_equal(77, g:plugin_also_works)
   call assert_equal(17, g:ftdetect_works)
-  call assert_equal(57, g:eftdetect_works)
   call assert_true(len(&rtp) > len(rtp))
   call assert_true(&rtp =~ '/testdir/Xdir/pack/mine/opt/mytest\($\|,\)')
   call assert_true(&rtp =~ '/testdir/Xdir/pack/mine/opt/mytest/after$')
